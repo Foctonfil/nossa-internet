@@ -109,6 +109,37 @@ O repositório precisa estar em **GitHub ou Bitbucket**, público.
 
 ### Correção
 
+*Respostas sobre as questões da Entrega 1*
+
+## Sub-redes
+ 
+| Segmento | CIDR | Máscara | Total de endereços | Endereços utilizáveis |
+|---|---|---|---|---|
+| seg-a | 10.0.10.0/24 | 255.255.255.0 | 256 | 254 (10.0.10.1 a 10.0.10.254) |
+| seg-b | 10.0.20.0/24 | 255.255.255.0 | 256 | 254 (10.0.20.1 a 10.0.20.254) |
+
+## Qual endereço foi para cada máquina
+ 
+**Segmento A** (`10.0.10.0/24`):
+ 
+| Contêiner | Serviço | IP |
+|---|---|---|
+| e1-host-a1 | host-a1 | 10.0.10.10 |
+| e1-host-a2 | host-a2 | 10.0.10.11 |
+| e1-srv-a | srv-a | 10.0.10.20 |
+ 
+**Segmento B** (`10.0.20.0/24`):
+ 
+| Contêiner | Serviço | IP |
+|---|---|---|
+| e1-host-b1 | host-b1 | 10.0.20.10 |
+| e1-host-b2 | host-b2 | 10.0.20.11 |
+
+
+**Razão de A não alcançar B**
+
+A não alcança B porque seg-a (10.0.10.0/24) e seg-b (10.0.20.0/24) são redes bridge separadas no Docker, sem nenhum roteador conectando as duas, e porque o comando de inicialização dos hosts apaga a rota padrão (ip route del default). Assim, quando host-a1 tenta enviar um pacote para 10.0.20.10, o kernel percebe que o destino não pertence à sua própria sub-rede e não existe nenhuma rota para chegá-lo, retornando o erro "Network is unreachable" em vez de um timeout.
+
 ```bash
 git clone <repo-do-grupo> && cd <repo> && make up E=2 && make verificar E=2
 ```
