@@ -140,6 +140,11 @@ O repositório precisa estar em **GitHub ou Bitbucket**, público.
 
 A não alcança B porque seg-a (10.0.10.0/24) e seg-b (10.0.20.0/24) são redes bridge separadas no Docker, sem nenhum roteador conectando as duas, e porque o comando de inicialização dos hosts apaga a rota padrão (ip route del default). Assim, quando host-a1 tenta enviar um pacote para 10.0.20.10, o kernel percebe que o destino não pertence à sua própria sub-rede e não existe nenhuma rota para chegá-lo, retornando o erro "Network is unreachable" em vez de um timeout.
 
+*Respostas sobre as questões da Entrega 3*
+
+## O cliente de vocês consegue distinguir uma réplica morta de uma réplica particionada? Se não consegue, isso é um problema?
+
+Não. O cliente.sh tenta as réplicas em ordem, dando até 1 segundo a cada uma, e considera “viva” a primeira que devolver qualquer corpo não vazio. Ele não separa réplica morta, lenta ou isolada por partição de rede. Para ele, tudo isso é só “não respondeu”. Além disso, como o curl não usa -f, até uma resposta de erro HTTP com corpo seria aceita. Isso não impede o failover para outra réplica, mas é um problema se o serviço exigir leituras consistentes ou atualizadas, pois o cliente pode acabar falando com uma réplica isolada ou atrasada sem saber.
 ```bash
 git clone <repo-do-grupo> && cd <repo> && make up E=2 && make verificar E=2
 ```
