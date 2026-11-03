@@ -152,3 +152,7 @@ dá para corrigir lendo a saída.
 ## O cliente de vocês consegue distinguir uma réplica morta de uma réplica particionada? Se não consegue, isso é um problema?
 
 Não. O cliente.sh tenta as réplicas em ordem, dando até 1 segundo a cada uma, e considera “viva” a primeira que devolver qualquer corpo não vazio. Ele não separa réplica morta, lenta ou isolada por partição de rede. Para ele, tudo isso é só “não respondeu”. Além disso, como o curl não usa -f, até uma resposta de erro HTTP com corpo seria aceita. Isso não impede o failover para outra réplica, mas é um problema se o serviço exigir leituras consistentes ou atualizadas, pois o cliente pode acabar falando com uma réplica isolada ou atrasada sem saber.
+
+*Resposta sobre a questão da Entrega 4*
+
+O tempo de convergência foi de 21 segundos. Numa rede com 50 roteadores o tempo mudaria pouco, continuando na casa dos 21 com um pequeno acréscimo de milésimos, pois a detecção, que é a maior parcela, depende apenas dos dois roteadores vizinhos ao link caído e não do tamanho da rede. O que cresce é a propagação das atualizações que é proporcional ao diâmetro da rede, não ao número de roteadores.
